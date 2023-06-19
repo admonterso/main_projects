@@ -1,0 +1,10 @@
+../Core/Src/geotextLib.c:14:6:printItvirteba	80	static
+../Core/Src/geotextLib.c:54:6:printMzadVar	64	static
+../Core/Src/geotextLib.c:89:6:printUcxoBaratia	80	static
+../Core/Src/geotextLib.c:143:6:printBlansiAraa	72	static
+../Core/Src/geotextLib.c:195:6:printMiadetBarati	80	static
+../Core/Src/geotextLib.c:243:6:printShecdoma	72	static
+../Core/Src/geotextLib.c:278:6:printDaicadet	64	static
+../Core/Src/geotextLib.c:311:6:printVemzadebi	80	static
+../Core/Src/geotextLib.c:351:6:printBalansi	64	static
+../Core/Src/geotextLib.c:390:6:printAxldeba	64	static
