@@ -210,6 +210,16 @@ uint8_t eGeo[] = {
 		  0x06
 
 };
+uint8_t wGeo[] = {
+  0x0A,
+  0x15,
+  0x10,
+  0x10,
+  0x1E,
+  0x11,
+  0x11,
+  0x0E
+};
 /**
   * @brief  The application entry point.
   * @retval int
@@ -401,6 +411,35 @@ void printMiadetBarati(uint8_t row, uint8_t column){
 		HD44780_SetCursor(column+2, row+1);
 		HD44780_PrintStr("0.18 GEL");
 
+
+}
+
+void prinWarmateba(uint8_t row, uint8_t column){
+		HD44780_Clear();
+		HD44780_CreateSpecialChar(1, wGeo);
+		HD44780_SetCursor(column, row);
+		HD44780_PrintSpecialChar(1);
+		HD44780_CreateSpecialChar(2, aGeo);
+		HD44780_SetCursor(column+1, row);
+		HD44780_PrintSpecialChar(2);
+		HD44780_CreateSpecialChar(3, rGeo);
+		HD44780_SetCursor(column+2, row);
+		HD44780_PrintSpecialChar(3);
+		HD44780_CreateSpecialChar(4, mGeo);
+		HD44780_SetCursor(column+3, row);
+		HD44780_PrintSpecialChar(4);
+		HD44780_PrintSpecialChar(2); // a
+		HD44780_CreateSpecialChar(5, tGeo); //t
+		HD44780_SetCursor(column+5, row);
+		HD44780_PrintSpecialChar(5);
+		HD44780_CreateSpecialChar(6, eGeo); //e
+		HD44780_SetCursor(column+6, row);
+		HD44780_PrintSpecialChar(6);
+		HD44780_CreateSpecialChar(7, bGeo); //b
+		HD44780_SetCursor(column+7, row);
+		HD44780_PrintSpecialChar(7);
+		HD44780_PrintSpecialChar(2);
+		HD44780_PrintStr("!");
 
 }
 void printShecdoma(uint8_t row, uint8_t column){

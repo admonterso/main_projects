@@ -182,7 +182,21 @@ void takeData(uint8_t* data, int length, uint8_t* dataToDisplay){
 }
 
 
+void insert(uint8_t* main){
 
+    int lenght = strlen((char*)main);
+    char* operationTypePtr = strstr((char*)main, "\"payment");
+    char* value = strchr((char*)operationTypePtr, 'p');
+    int index = value - (char*)main;
+
+
+    for(int i = lenght+4; i>index; i--){
+        main[i] = main[i - 4];
+    }
+    char* valueStart = strchr((char*)operationTypePtr, '\"') + 1;
+    strncpy((char*)valueStart, "makepayment", 11);
+
+}
 /* USER CODE END 0 */
 
 /**
@@ -267,33 +281,49 @@ int main(void)
 		  uint8_t dispData[50];
 
 		  switch(Status){
+		  	  	case 202:
+		  	  		HAL_GPIO_TogglePin(GPIOB, RELAY_Pin);
+		  	  		AppruveSound();
+		  	  	    prinWarmateba(0, 3);
+		  	  		insert(postData);
+		  	  		LENGTH = strlen((char*)postData);
+					MQTTPubToTopic(LENGTH);
+					HAL_Delay(50);
+					HAL_UART_Transmit(&huart1, postData, LENGTH, 10);
+		  	  		break;
 		  	  	case 200:
 		  	  		//AppruveSound();
-		  	  		led(2);
 		  	  		check++;
 		  	  		break;
 		  	  	case 201:
-					AppruveSound();
+		  	  		HAL_GPIO_TogglePin(GPIOB, RELAY_Pin);
 					takeData(buffer, count, dispData);
 					printBalansi(0, 0);
 					HD44780_PrintStr((char*) dispData);
-					RelaySwitch();
 					HAL_Delay(2000);
 					printMiadetBarati(0, 2);
 					cardRead = 0;
+					memset(postData, 0, sizeof(postData));
 					break;
 				case 293:
-					takeData(buffer, count, dispData);
+
+					//takeData(buffer, count, dispData);
+
 					HD44780_Clear();
+
 					HD44780_SetCursor(0, 0);
+
 					printUcxoBaratia(0,0);
+
 					ErrorSound();
+
 					HAL_Delay(1000);
+
 					printMiadetBarati(0, 2);
 					cardRead = 0;
 					break;
 				case 291:
-					takeData(buffer, count, dispData);
+					//takeData(buffer, count, dispData);
 					HD44780_Clear();
 					HD44780_SetCursor(0, 0);
 					printBlansiAraa(0, 0);
@@ -303,7 +333,7 @@ int main(void)
 					cardRead = 0;
 					break;
 				case 296:
-					takeData(buffer, count, dispData);
+					//takeData(buffer, count, dispData);
 					HD44780_Clear();
 					HD44780_SetCursor(0, 0);
 					HD44780_PrintStr((char*) dispData);
@@ -313,7 +343,7 @@ int main(void)
 					cardRead = 0;
 					break;
 				case 297:
-					takeData(buffer, count, dispData);
+					//takeData(buffer, count, dispData);
 					HD44780_Clear();
 					HD44780_SetCursor(0, 0);
 					HD44780_PrintStr((char*) dispData);
@@ -323,7 +353,7 @@ int main(void)
 					cardRead = 0;
 					break;
 				case 299:
-					takeData(buffer, count, dispData);
+					//takeData(buffer, count, dispData);
 					HD44780_Clear();
 					HD44780_SetCursor(0, 0);
 					HD44780_PrintStr((char*) dispData);
@@ -375,7 +405,6 @@ int main(void)
 
 			 HAL_UART_Transmit(&huart1, postData, LENGTH, 100);
 
-			 memset(postData, 0, sizeof(postData));
 			 cardRead = 1;
 			 CardTime = HAL_GetTick();
 		 }

@@ -18,4 +18,5 @@ void printUcxoBaratia(uint8_t row, uint8_t column);
 void printBlansiAraa(uint8_t row, uint8_t column);
 void printItvirteba(uint8_t row, uint8_t column);
 void printShecdoma(uint8_t row, uint8_t column);
+void prinWarmateba(uint8_t row, uint8_t column);
 #endif /* INC_GEOTEXTLIB_H_ */
