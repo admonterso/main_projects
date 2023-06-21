@@ -40,11 +40,15 @@
 #define STR(x) STR_HELPER(x)
 #define currentTerminal 164522975789130
 
-unsigned long T,timer;
+unsigned long T,timer, counter;
 int check = 1;
 int l;
 int temp = 0;
 int LENGTH = 0;
+uint8_t TIM_Count = 0;
+uint8_t TIM_Count1 = 0;
+uint8_t timeOK = 0;
+
 uint8_t c;
 uint8_t readSatus=0;
 uint8_t postData[255];
@@ -70,6 +74,9 @@ I2C_HandleTypeDef hi2c1;
 
 SPI_HandleTypeDef hspi1;
 
+TIM_HandleTypeDef htim1;
+TIM_HandleTypeDef htim2;
+
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
 
@@ -84,9 +91,12 @@ static void MX_I2C1_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_USART2_UART_Init(void);
+static void MX_TIM1_Init(void);
+static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
+
 
 	if(count >= 124){
 		count = 0;
@@ -102,6 +112,44 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		readSatus = 1;
 	}
 
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	if (htim->Instance == TIM1) {
+		if(TIM_Count>5){
+			TIM_Count = 0;
+			HAL_TIM_Base_Stop_IT(&htim1);
+
+		}
+		else{
+			HAL_GPIO_TogglePin(BUZZER_GPIO_Port, BUZZER_Pin);
+			TIM_Count++;
+		}
+
+	}
+//	if (htim->Instance == TIM2) {
+//		if(TIM_Count1>1){
+//			TIM_Count1 = 0;
+//			HAL_TIM_Base_Stop_IT(&htim2);
+//
+//		}
+//		else{
+//			HAL_GPIO_TogglePin(RELAY_GPIO_Port, RELAY_Pin);
+//			TIM_Count1++;
+//		}
+//
+//	}
+
+}
+
+void reloadSoundTIM(){
+	TIM_Count = 0;
+	HAL_TIM_Base_Start_IT(&htim1);
+}
+void reloadRelayTIM(){
+	TIM_Count1 = 0;
+	HAL_TIM_Base_Start_IT(&htim2);
 }
 /* USER CODE END PFP */
 
@@ -133,56 +181,6 @@ void led(uint8_t n);
 void readCardData(uint8_t* finalData);
 uint8_t cardOperationWithBlockedSector(uint8_t* finalData);
 
-
-
-int takeStatus(uint8_t* data, int length){
-	int i;
-	uint8_t STATUSSTR[3];
-	for(i =5; i< length; i++){
-	  if(data[i] == '<')
-	  {
-		  break;
-	  }
-	}
-	STATUSSTR[0] = data[i+1];
-	STATUSSTR[1] = data[i+2];
-	STATUSSTR[2] = data[i+3];
-	if(STATUSSTR[0] == 'E' && STATUSSTR[1] == 'R' && STATUSSTR[2] == 'A'){
-		jumpToAddress(resetAddress);
-	}
-	int Status = atoi((char*)STATUSSTR);
-	return Status;
-
-}
-void takeData(uint8_t* data, int length, uint8_t* dataToDisplay){
-	int i,j,l;
-	for(i =5; i< length; i++){
-	  if(data[i] == '<')
-	  {
-		  break;
-	  }
-	}
-	for(j = i; j< length; j++){
-	  if(data[j] == ',')
-		 {
-			  break;
-		 }
-	}
-
-	for(l = j; l< length; l++){
-	  if(data[l] == '!')
-		 {
-			  break;
-		 }
-	}
-
-	strncpy((char *)dataToDisplay, (char *)data + j + 1, l - j - 1);
-
-
-}
-
-
-
 /* USER CODE END 0 */
 
 /**
@@ -200,8 +198,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-
-	HAL_Init();
+  HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -220,6 +217,8 @@ int main(void)
   MX_SPI1_Init();
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
+  MX_TIM1_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   HD44780_Init(2);
 
@@ -237,7 +236,7 @@ int main(void)
   	T = HAL_GetTick();
   	 printMiadetBarati(0, 2);
   	 led(1);
-  	/* USER CODE END 2 */
+  /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -253,6 +252,9 @@ int main(void)
 		  }
 
 	  }
+	  if(HAL_GetTick() - counter >= 1000){
+		  HAL_GPIO_WritePin(RELAY_GPIO_Port, RELAY_Pin, 0);
+	  }
 	  if(HAL_GetTick() - T >= 2*(60000) && cardRead == 0){
 
 		  if(temp >= check)jumpToAddress(resetAddress); //restart
@@ -267,23 +269,41 @@ int main(void)
 		  uint8_t dispData[50];
 
 		  switch(Status){
+		  	  	case 202:
+		  	  		//HAL_GPIO_TogglePin(GPIOB, RELAY_Pin);
+		  	  		//AppruveSound();
+		  	  	    HAL_GPIO_WritePin(RELAY_GPIO_Port, RELAY_Pin, 1);
+
+		  	  	    counter = HAL_GetTick();
+
+		  	  	    HAL_TIM_Base_Start_IT(&htim1);
+		  	  	    prinWarmateba(0, 3);
+		  	  		insert(postData);
+		  	  		LENGTH = strlen((char*)postData);
+					MQTTPubToTopic(LENGTH);
+					HAL_Delay(50);
+					HAL_UART_Transmit(&huart1, postData, LENGTH, 10);
+		  	  		break;
 		  	  	case 200:
 		  	  		//AppruveSound();
-		  	  		led(2);
 		  	  		check++;
 		  	  		break;
 		  	  	case 201:
-					AppruveSound();
+		  	  		//HAL_GPIO_TogglePin(GPIOB, RELAY_Pin);
+
 					takeData(buffer, count, dispData);
 					printBalansi(0, 0);
 					HD44780_PrintStr((char*) dispData);
-					RelaySwitch();
-					HAL_Delay(2000);
+					HAL_Delay(1000);
+					HAL_GPIO_WritePin(RELAY_GPIO_Port, RELAY_Pin, 0);
+					HAL_Delay(1000);
 					printMiadetBarati(0, 2);
 					cardRead = 0;
+					memset(postData, 0, sizeof(postData));
 					break;
 				case 293:
-					takeData(buffer, count, dispData);
+
+					//takeData(buffer, count, dispData);
 					HD44780_Clear();
 					HD44780_SetCursor(0, 0);
 					printUcxoBaratia(0,0);
@@ -293,7 +313,7 @@ int main(void)
 					cardRead = 0;
 					break;
 				case 291:
-					takeData(buffer, count, dispData);
+					//takeData(buffer, count, dispData);
 					HD44780_Clear();
 					HD44780_SetCursor(0, 0);
 					printBlansiAraa(0, 0);
@@ -303,7 +323,7 @@ int main(void)
 					cardRead = 0;
 					break;
 				case 296:
-					takeData(buffer, count, dispData);
+					//takeData(buffer, count, dispData);
 					HD44780_Clear();
 					HD44780_SetCursor(0, 0);
 					HD44780_PrintStr((char*) dispData);
@@ -313,7 +333,7 @@ int main(void)
 					cardRead = 0;
 					break;
 				case 297:
-					takeData(buffer, count, dispData);
+					//takeData(buffer, count, dispData);
 					HD44780_Clear();
 					HD44780_SetCursor(0, 0);
 					HD44780_PrintStr((char*) dispData);
@@ -323,7 +343,7 @@ int main(void)
 					cardRead = 0;
 					break;
 				case 299:
-					takeData(buffer, count, dispData);
+					//takeData(buffer, count, dispData);
 					HD44780_Clear();
 					HD44780_SetCursor(0, 0);
 					HD44780_PrintStr((char*) dispData);
@@ -375,7 +395,6 @@ int main(void)
 
 			 HAL_UART_Transmit(&huart1, postData, LENGTH, 100);
 
-			 memset(postData, 0, sizeof(postData));
 			 cardRead = 1;
 			 CardTime = HAL_GetTick();
 		 }
@@ -501,6 +520,97 @@ static void MX_SPI1_Init(void)
 }
 
 /**
+  * @brief TIM1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM1_Init(void)
+{
+
+  /* USER CODE BEGIN TIM1_Init 0 */
+
+  /* USER CODE END TIM1_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM1_Init 1 */
+
+  /* USER CODE END TIM1_Init 1 */
+  htim1.Instance = TIM1;
+  htim1.Init.Prescaler = 719;
+  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim1.Init.Period = 7999;
+  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim1.Init.RepetitionCounter = 0;
+  htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim1, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM1_Init 2 */
+
+  /* USER CODE END TIM1_Init 2 */
+
+}
+
+/**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM2_Init(void)
+{
+
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 7199;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 7999;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
+
+}
+
+/**
   * @brief USART1 Initialization Function
   * @param None
   * @retval None
@@ -574,6 +684,8 @@ static void MX_USART2_UART_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
+/* USER CODE BEGIN MX_GPIO_Init_1 */
+/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
@@ -611,6 +723,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
