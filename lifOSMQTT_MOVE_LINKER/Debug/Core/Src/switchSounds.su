@@ -1,4 +1,7 @@
-../Core/Src/switchSounds.c:13:6:AppruveSound	8	static
-../Core/Src/switchSounds.c:27:6:RelaySwitch	8	static
-../Core/Src/switchSounds.c:33:6:ErrorSound	8	static
-../Core/Src/switchSounds.c:43:6:CardReadSound	8	static
+../Core/Src/switchSounds.c:22:6:AppruveSound	8	static
+../Core/Src/switchSounds.c:36:6:RelaySwitch	8	static
+../Core/Src/switchSounds.c:42:6:ErrorSound	8	static
+../Core/Src/switchSounds.c:52:6:CardReadSound	8	static
+../Core/Src/switchSounds.c:59:6:takeData	40	static
+../Core/Src/switchSounds.c:86:6:insert	40	static
+../Core/Src/switchSounds.c:102:5:takeStatus	32	static

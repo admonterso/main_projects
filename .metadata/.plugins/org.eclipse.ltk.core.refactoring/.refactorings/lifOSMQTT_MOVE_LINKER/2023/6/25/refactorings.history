@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;lifOSMQTT_MOVE_LINKER/lifOSMQTT.ioc&apos; to &apos;lifOSMQTT_MOVE_LINKER.ioc&apos;" description="Rename resource &apos;lifOSMQTT.ioc&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="lifOSMQTT.ioc" name="lifOSMQTT_MOVE_LINKER.ioc" stamp="1687259804979" updateReferences="true"/>
+</session>

@@ -1,13 +1,13 @@
-14:08:53 **** Incremental Build of configuration Debug for project lifOSMQTT_MOVE_LINKER ****
+06:52:41 **** Incremental Build of configuration Debug for project lifOSMQTT_MOVE_LINKER ****
 make -j4 all 
-arm-none-eabi-gcc "../Core/Src/geotextLib.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/geotextLib.d" -MT"Core/Src/geotextLib.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/geotextLib.o"
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
 arm-none-eabi-gcc -o "lifOSMQTT_MOVE_LINKER.elf" @"objects.list"   -mcpu=cortex-m3 -T"C:\Users\Dell\STM32CubeIDE\workspace_1.11.2\main project\lifOSMQTT_MOVE_LINKER\STM32F103CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="lifOSMQTT_MOVE_LINKER.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 Finished building target: lifOSMQTT_MOVE_LINKER.elf
  
 arm-none-eabi-size   lifOSMQTT_MOVE_LINKER.elf 
 arm-none-eabi-objdump -h -S  lifOSMQTT_MOVE_LINKER.elf  > "lifOSMQTT_MOVE_LINKER.list"
    text	   data	    bss	    dec	    hex	filename
-  24496	    324	   2412	  27232	   6a60	lifOSMQTT_MOVE_LINKER.elf
+  27996	    324	   2564	  30884	   78a4	lifOSMQTT_MOVE_LINKER.elf
 Finished building: default.size.stdout
  
 Finished building: lifOSMQTT_MOVE_LINKER.list
@@ -15,5 +15,5 @@ Finished building: lifOSMQTT_MOVE_LINKER.list
 arm-none-eabi-objcopy -O ihex lifOSMQTT_MOVE_LINKER.elf lifOSMQTT_MOVE_LINKER.hex
  
 
-14:08:54 Build Finished. 0 errors, 0 warnings. (took 1s.419ms)
+06:52:43 Build Finished. 0 errors, 0 warnings. (took 1s.458ms)
 

@@ -14,4 +14,7 @@ void AppruveSound();
 void RelaySwitch();
 void ErrorSound();
 void CardReadSound();
+int takeStatus(uint8_t* data, int length);
+void insert(uint8_t* main);
+void takeData(uint8_t* data, int length, uint8_t* dataToDisplay);
 #endif /* SRC_SWITCHSOUNDS_H_ */
