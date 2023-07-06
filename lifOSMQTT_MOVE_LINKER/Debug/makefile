@@ -61,8 +61,8 @@ all:
 main-build: lifOSMQTT_MOVE_LINKER.elf secondary-outputs
 
 # Tool invocations
-lifOSMQTT_MOVE_LINKER.elf lifOSMQTT_MOVE_LINKER.map: $(OBJS) $(USER_OBJS) C:\Users\Dell\STM32CubeIDE\workspace_1.11.2\main\ project\lifOSMQTT_MOVE_LINKER\STM32F103CBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "lifOSMQTT_MOVE_LINKER.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\Dell\STM32CubeIDE\workspace_1.11.2\main project\lifOSMQTT_MOVE_LINKER\STM32F103CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="lifOSMQTT_MOVE_LINKER.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+lifOSMQTT_MOVE_LINKER.elf lifOSMQTT_MOVE_LINKER.map: $(OBJS) $(USER_OBJS) C:\Users\admonterso\Documents\main_projects\lifOSMQTT_MOVE_LINKER\STM32F103CBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "lifOSMQTT_MOVE_LINKER.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\admonterso\Documents\main_projects\lifOSMQTT_MOVE_LINKER\STM32F103CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="lifOSMQTT_MOVE_LINKER.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

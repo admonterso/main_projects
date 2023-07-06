@@ -54,15 +54,14 @@ lifOSMQTT.list \
 
 
 # All Target
-all:
-	+@$(MAKE) --no-print-directory main-build && $(MAKE) --no-print-directory post-build
+all: main-build
 
 # Main-build Target
 main-build: lifOSMQTT.elf secondary-outputs
 
 # Tool invocations
-lifOSMQTT.elf lifOSMQTT.map: $(OBJS) $(USER_OBJS) C:\Users\Dell\STM32CubeIDE\workspace_1.11.2\lifOSMQTT\STM32F103CBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "lifOSMQTT.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\Dell\STM32CubeIDE\workspace_1.11.2\lifOSMQTT\STM32F103CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="lifOSMQTT.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+lifOSMQTT.elf lifOSMQTT.map: $(OBJS) $(USER_OBJS) C:\Users\admonterso\Documents\main_projects\lifOSMQTT\STM32F103CBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "lifOSMQTT.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\admonterso\Documents\main_projects\lifOSMQTT\STM32F103CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="lifOSMQTT.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -81,10 +80,6 @@ clean:
 	-$(RM) default.size.stdout lifOSMQTT.elf lifOSMQTT.list lifOSMQTT.map
 	-@echo ' '
 
-post-build:
-	arm-none-eabi-objcopy -O ihex lifOSMQTT.elf lifOSMQTT.hex
-	-@echo ' '
-
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
 
 fail-specified-linker-script-missing:
@@ -94,6 +89,6 @@ fail-specified-linker-script-missing:
 warn-no-linker-script-specified:
 	@echo 'Warning: No linker script specified. Check the linker settings in the build configuration.'
 
-.PHONY: all clean dependents main-build fail-specified-linker-script-missing warn-no-linker-script-specified post-build
+.PHONY: all clean dependents main-build fail-specified-linker-script-missing warn-no-linker-script-specified
 
 -include ../makefile.targets

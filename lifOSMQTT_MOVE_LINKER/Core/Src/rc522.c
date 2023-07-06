@@ -6,7 +6,7 @@
 #include "stdio.h"
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
-#define currentTerminal 164522975789130
+#define currentTerminal 164522982240839
 extern SPI_HandleTypeDef hspi1;
 
 // RC522

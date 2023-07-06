@@ -409,7 +409,7 @@ void printMiadetBarati(uint8_t row, uint8_t column){
 		HD44780_SetCursor(column+12, row);
 		HD44780_PrintSpecialChar(2);
 		HD44780_SetCursor(column+2, row+1);
-		HD44780_PrintStr("0.18 GEL");
+		HD44780_PrintStr("0.10 GEL");
 
 
 }

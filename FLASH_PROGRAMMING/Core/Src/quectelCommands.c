@@ -121,6 +121,7 @@ void checkQueqtelWithNoEcho (uint8_t *RXBuffer){
 			HAL_UART_Transmit(&huart1, mainBuffer, 4, 200);
 			HAL_UART_Receive(&huart1, RXBuffer, 6, 500);
 			status = checkCommand(RXBuffer, (uint8_t*)"OK");
+
 			if(status){
 				break;
 			}

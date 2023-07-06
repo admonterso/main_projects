@@ -61,8 +61,8 @@ all:
 main-build: lifOSMQTT_UPDATE.elf secondary-outputs
 
 # Tool invocations
-lifOSMQTT_UPDATE.elf lifOSMQTT_UPDATE.map: $(OBJS) $(USER_OBJS) C:\Users\Dell\STM32CubeIDE\workspace_1.11.2\lifOSMQTT_UPDATE\STM32F103CBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "lifOSMQTT_UPDATE.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\Dell\STM32CubeIDE\workspace_1.11.2\lifOSMQTT_UPDATE\STM32F103CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="lifOSMQTT_UPDATE.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+lifOSMQTT_UPDATE.elf lifOSMQTT_UPDATE.map: $(OBJS) $(USER_OBJS) C:\Users\admonterso\Documents\main_projects\lifOSMQTT_UPDATE\STM32F103CBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "lifOSMQTT_UPDATE.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\admonterso\Documents\main_projects\lifOSMQTT_UPDATE\STM32F103CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="lifOSMQTT_UPDATE.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

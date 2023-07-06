@@ -36,9 +36,10 @@
 /* USER CODE BEGIN PTD */
 #define versionAdress 0x0800BFF0
 #define resetAddress 0x08000000
+#define currentTerminalADRR 0x0800B000
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
-#define currentTerminal 164522975789130
+#define currentTerminal 164522982240839
 
 unsigned long T,timer, counter;
 int check = 1;
@@ -112,6 +113,33 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		readSatus = 1;
 	}
 
+}
+
+char* convertNumberToCharArray(uint64_t number) {
+    // Count the number of digits in the number
+    uint64_t temp = number;
+    int numDigits = 1;
+    while (temp /= 10) {
+        numDigits++;
+    }
+
+    // Allocate memory for the character array (+1 for null-terminator)
+    char* buffer = (char*)malloc((numDigits + 1) * sizeof(char));
+    if (buffer == NULL) {
+        // Error in memory allocation
+        return NULL;
+    }
+
+    // Convert each digit to its corresponding character representation
+    int i = numDigits - 1;
+    while (number != 0) {
+        buffer[i--] = '0' + (number % 10);
+        number /= 10;
+    }
+
+    buffer[numDigits] = '\0'; // Null-terminate the character array
+
+    return buffer;
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
@@ -229,7 +257,10 @@ int main(void)
 
 
   	uint32_t version = *(__IO uint32_t *)versionAdress; // for version check
-    sprintf((char*) MQTT_CHECK_DATA, "{\"operationType\":\"check\",\"content\":{\"terminalID\":\""STR(currentTerminal)"\",\"firmwareVersion\":%ld}}", version);
+  	uint64_t terminalID = *(uint64_t *)currentTerminalADRR;
+  	char * terminalStr = convertNumberToCharArray(terminalID);
+
+    sprintf((char*) MQTT_CHECK_DATA, "{\"operationType\":\"check\",\"content\":{\"terminalID\":\"%s\",\"firmwareVersion\":%ld}}",terminalStr, version);
 
 
   	HAL_UART_Receive_IT(&huart1, &buffer[count], 1);

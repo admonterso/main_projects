@@ -30,11 +30,14 @@
 #include <stdlib.h>
 
 #define address 0x0800C000
+//#define address 0x080056A0
 #define versionAdress 0x0800BFF0
+//#define versionAdress 0x080056A0
 #define bytesToRead 960
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
-#define currentTerminal 164522975789130
+#define currentTerminalADRR 0x0800B000
+#define currentTerminal 164522982240839
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -73,8 +76,8 @@ uint32_t testData[] = {0xB9337823, 0x237833B9}; // test data
 uint32_t Adress = address; // for address increment
 uint32_t state; // for buttons
 uint8_t updateChars[8]; // update char store
-uint8_t MQTT_CHECK_DATA[100];
-uint8_t MQTT_GOT_DATA[] = "{\"operationType\":\"acknowledge\",\"content\":{\"status\":\"success\",\"terminalID\":\""STR(currentTerminal)"\"}}";
+uint8_t MQTT_CHECK_DATA[180];
+uint8_t MQTT_GOT_DATA[100];
 uint8_t c; // this stores the input chars from uart to find start and the end of input data
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
@@ -121,6 +124,33 @@ uint32_t convertStringToHex(uint8_t* str) {
     }
 
     return hexValue;
+}
+
+char* convertNumberToCharArray(uint64_t number) {
+    // Count the number of digits in the number
+    uint64_t temp = number;
+    int numDigits = 1;
+    while (temp /= 10) {
+        numDigits++;
+    }
+
+    // Allocate memory for the character array (+1 for null-terminator)
+    char* buffer = (char*)malloc((numDigits + 1) * sizeof(char));
+    if (buffer == NULL) {
+        // Error in memory allocation
+        return NULL;
+    }
+
+    // Convert each digit to its corresponding character representation
+    int i = numDigits - 1;
+    while (number != 0) {
+        buffer[i--] = '0' + (number % 10);
+        number /= 10;
+    }
+
+    buffer[numDigits] = '\0'; // Null-terminate the character array
+
+    return buffer;
 }
 
 uint32_t convertIntToHex(int num) {
@@ -230,12 +260,26 @@ void quectelInit(){
 	  //memset(buffer, 0, sizeof(buffer));
 
 	  //MQTTPubToTopic(buffer, MQTT_EXMP_DATA);
-	  HD44780_PrintStr("#");
 	  memset(data, 0, sizeof(data));
 
       HAL_Delay(500);
 }
 
+
+uint64_t * flashCurTerminal(uint64_t DATA, uint32_t ADRESS){
+
+
+	uint64_t FData = DATA;
+
+	eraseFlashRange(ADRESS, ADRESS + 1);
+
+	HAL_FLASH_Unlock();
+	HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD,ADRESS, FData);
+	HAL_FLASH_Lock();
+
+	uint64_t * RDAddr = (uint64_t *)  ADRESS;
+	return RDAddr;
+}
 /* USER CODE END 0 */
 
 /**
@@ -274,18 +318,26 @@ int main(void)
 
   HD44780_Init(2);
   printItvirteba(0, 3);
+
+//  eraseFlashRange(currentTerminalADRR, currentTerminalADRR + 4);
+//
+//  HAL_FLASH_Unlock();
+//
+//  HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, currentTerminalADRR, 1);
+//
+//  HAL_FLASH_Lock();
+//
+//  uint64_t terminal =  *(__IO uint64_t *)currentTerminalADRR;
+
   HD44780_SetCursor(0, 1);
   for(int i = 0;i<2; i++){
 	  quectelInit();
   }
 
-  uint32_t version = *(__IO uint32_t *)versionAdress; // for version check
+  uint32_t * versionPTR = (uint32_t *)  versionAdress;
+  uint32_t version = *versionPTR; // for version check
 
-//  eraseFlashRange(versionAdress, versionAdress + 4);
-//  HAL_FLASH_Unlock();
-//  HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD,0x0800BFF0, 1);
-//  HAL_FLASH_Lock();
-
+  uint64_t terminalID = *flashCurTerminal(currentTerminal, currentTerminalADRR);
 
   if(version == 0xFFFFFFFF || version == 0){
 	  	eraseFlashRange(versionAdress, versionAdress + 4);
@@ -293,17 +345,27 @@ int main(void)
 		HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD,versionAdress, 1);
 		HAL_FLASH_Lock();
   }
-  version = *(__IO uint32_t *)versionAdress;
+
+  version = *versionPTR;
+
+
+
+  char * terminalStr = convertNumberToCharArray(terminalID);
+
   //sprintf((char*) MQTT_CHECK_DATA, "{\"operationType\":\"check\",\"content\":{\"terminalID\":\"164522982240839\",\"firmwareVersion\":1}}");
-  sprintf((char*) MQTT_CHECK_DATA, "{\"operationType\":\"check\",\"content\":{\"terminalID\":\""STR(currentTerminal)"\",\"firmwareVersion\":%ld}}", version);
+  sprintf((char*)MQTT_CHECK_DATA, "{\"operationType\":\"check\",\"content\":{\"terminalID\":\"%s\",\"firmwareVersion\":%ld}}", terminalStr, version);
 
+  sprintf((char*)MQTT_GOT_DATA, "{\"operationType\":\"acknowledge\",\"content\":{\"status\":\"success\",\"terminalID\":\"%s\"}}", terminalStr);
   MQTTPubToTopic(strlen((char*)MQTT_CHECK_DATA));
-
-  HAL_UART_Transmit(&huart1, MQTT_CHECK_DATA, strlen((char*)MQTT_CHECK_DATA), 50);
 
   uint8_t checkCon = 0;
   uint8_t printDownCount = 0;
   uint8_t printDownCountAcum = 0;
+
+  HAL_UART_Transmit(&huart1, MQTT_CHECK_DATA, strlen((char*)MQTT_CHECK_DATA), 50);
+  HD44780_PrintStr("#");
+
+
 
   HAL_UART_Receive_IT(&huart1, &c, 1);
   int T = HAL_GetTick();

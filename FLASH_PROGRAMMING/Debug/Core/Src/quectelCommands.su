@@ -2,10 +2,10 @@
 ../Core/Src/quectelCommands.c:79:10:readIncomeData	16	static
 ../Core/Src/quectelCommands.c:96:9:checkCommand	24	static
 ../Core/Src/quectelCommands.c:115:6:checkQueqtelWithNoEcho	24	static
-../Core/Src/quectelCommands.c:133:6:ckeckQuectelSignalWithNoEcho	24	static
-../Core/Src/quectelCommands.c:150:6:MQTTRecMod	24	static
-../Core/Src/quectelCommands.c:170:6:MQTTOpenPort	24	static
-../Core/Src/quectelCommands.c:196:6:MQTTConnect	24	static
-../Core/Src/quectelCommands.c:221:6:MQTTSubToTopic	16	static
-../Core/Src/quectelCommands.c:240:6:MQTTPubToTopic	80	static
-../Core/Src/quectelCommands.c:255:9:checkMQTTCon	24	static
+../Core/Src/quectelCommands.c:134:6:ckeckQuectelSignalWithNoEcho	24	static
+../Core/Src/quectelCommands.c:151:6:MQTTRecMod	24	static
+../Core/Src/quectelCommands.c:171:6:MQTTOpenPort	24	static
+../Core/Src/quectelCommands.c:197:6:MQTTConnect	24	static
+../Core/Src/quectelCommands.c:222:6:MQTTSubToTopic	16	static
+../Core/Src/quectelCommands.c:241:6:MQTTPubToTopic	80	static
+../Core/Src/quectelCommands.c:256:9:checkMQTTCon	24	static
