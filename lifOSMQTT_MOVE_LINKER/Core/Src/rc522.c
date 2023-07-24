@@ -4,9 +4,13 @@
 #include "rc522.h"
 #include <string.h>
 #include "stdio.h"
+#include <variables.h>
+#include <stdlib.h>
+#include "variables.h"
+
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
-#define currentTerminal 164522982240839
+#define currentTerminal 164522975789130
 extern SPI_HandleTypeDef hspi1;
 
 // RC522
@@ -32,6 +36,35 @@ extern void MFRC522_Halt(void);
 extern void cardOperation(uint8_t* finalData, uint8_t* p);
 extern void led(uint8_t n);
 uint8_t cardOperationWithBlockedSector(uint8_t* finalData);
+
+
+
+char* convertNumberToCharArray(uint64_t number) {
+    // Count the number of digits in the number
+    uint64_t temp = number;
+    int numDigits = 1;
+    while (temp /= 10) {
+        numDigits++;
+    }
+
+    // Allocate memory for the character array (+1 for null-terminator)
+    char* buffer = (char*)malloc((numDigits + 1) * sizeof(char));
+    if (buffer == NULL) {
+        // Error in memory allocation
+        return NULL;
+    }
+
+    // Convert each digit to its corresponding character representation
+    int i = numDigits - 1;
+    while (number != 0) {
+        buffer[i--] = '0' + (number % 10);
+        number /= 10;
+    }
+
+    buffer[numDigits] = '\0'; // Null-terminate the character array
+
+    return buffer;
+}
 
 uint8_t SPI1SendByte(uint8_t data) {
 	unsigned char writeCommand[1];
@@ -313,6 +346,7 @@ void MFRC522_Halt(void) {
 }
 
 uint8_t cardOperationWithBlockedSector(uint8_t* finalData){
+
 	  uint8_t status;
 	  uint8_t sectorKeyB[] = { 0xFA, 0xFB, 0xFC, 0x21, 0x01, 0x2A };
 
@@ -329,7 +363,7 @@ uint8_t cardOperationWithBlockedSector(uint8_t* finalData){
 	     if (!MFRC522_Request(PICC_REQIDL, str)) {
 	       if (!MFRC522_Anticoll(str)) {
 
-	         sprintf((char*) IDBuff, "{\"operationType\":\"payment\",\"content\":{\"terminalID\":\""STR(currentTerminal)"\",\"cardID\":\"%x%x%x%x\",", str[0],str[1], str[2], str[3]);
+	         sprintf((char*) IDBuff, "{\"operationType\":\"payment\",\"content\":{\"terminalID\":\"%s\",\"cardID\":\"%x%x%x%x\",",terminalStr, str[0],str[1], str[2], str[3]);
 
 	         l = strlen((char*)IDBuff);
 

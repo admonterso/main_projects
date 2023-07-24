@@ -35,15 +35,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  15 .debug_ranges 00000c48  00000000  00000000  000315c0  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  00018497  00000000  00000000  00032208  2**0
+ 16 .debug_macro  000184bf  00000000  00000000  00032208  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   0001028d  00000000  00000000  0004a69f  2**0
+ 17 .debug_line   000102b3  00000000  00000000  0004a6c7  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    0008671d  00000000  00000000  0005a92c  2**0
+ 18 .debug_str    00086780  00000000  00000000  0005a97a  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000050  00000000  00000000  000e1049  2**0
+ 19 .comment      00000050  00000000  00000000  000e10fa  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00003a28  00000000  00000000  000e109c  2**2
+ 20 .debug_frame  00003a28  00000000  00000000  000e114c  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -2367,28 +2367,30 @@ int main(void)
  8001170:	4618      	mov	r0, r3
  8001172:	f000 fc13 	bl	800199c <MQTTPubToTopic>
 
-  HAL_UART_Transmit(&huart1, MQTT_CHECK_DATA, strlen((char*)MQTT_CHECK_DATA), 50);
- 8001176:	4892      	ldr	r0, [pc, #584]	; (80013c0 <main+0x328>)
- 8001178:	f7fe ffea 	bl	8000150 <strlen>
- 800117c:	4603      	mov	r3, r0
- 800117e:	b29a      	uxth	r2, r3
- 8001180:	2332      	movs	r3, #50	; 0x32
- 8001182:	498f      	ldr	r1, [pc, #572]	; (80013c0 <main+0x328>)
- 8001184:	4891      	ldr	r0, [pc, #580]	; (80013cc <main+0x334>)
- 8001186:	f002 fd53 	bl	8003c30 <HAL_UART_Transmit>
-  HD44780_PrintStr("#");
- 800118a:	4891      	ldr	r0, [pc, #580]	; (80013d0 <main+0x338>)
- 800118c:	f7ff fc96 	bl	8000abc <HD44780_PrintStr>
-
   uint8_t checkCon = 0;
- 8001190:	2300      	movs	r3, #0
- 8001192:	f887 3023 	strb.w	r3, [r7, #35]	; 0x23
+ 8001176:	2300      	movs	r3, #0
+ 8001178:	f887 3023 	strb.w	r3, [r7, #35]	; 0x23
   uint8_t printDownCount = 0;
- 8001196:	2300      	movs	r3, #0
- 8001198:	f887 3022 	strb.w	r3, [r7, #34]	; 0x22
+ 800117c:	2300      	movs	r3, #0
+ 800117e:	f887 3022 	strb.w	r3, [r7, #34]	; 0x22
   uint8_t printDownCountAcum = 0;
- 800119c:	2300      	movs	r3, #0
- 800119e:	f887 3021 	strb.w	r3, [r7, #33]	; 0x21
+ 8001182:	2300      	movs	r3, #0
+ 8001184:	f887 3021 	strb.w	r3, [r7, #33]	; 0x21
+
+  HAL_UART_Transmit(&huart1, MQTT_CHECK_DATA, strlen((char*)MQTT_CHECK_DATA), 50);
+ 8001188:	488d      	ldr	r0, [pc, #564]	; (80013c0 <main+0x328>)
+ 800118a:	f7fe ffe1 	bl	8000150 <strlen>
+ 800118e:	4603      	mov	r3, r0
+ 8001190:	b29a      	uxth	r2, r3
+ 8001192:	2332      	movs	r3, #50	; 0x32
+ 8001194:	498a      	ldr	r1, [pc, #552]	; (80013c0 <main+0x328>)
+ 8001196:	488d      	ldr	r0, [pc, #564]	; (80013cc <main+0x334>)
+ 8001198:	f002 fd4a 	bl	8003c30 <HAL_UART_Transmit>
+  HD44780_PrintStr("#");
+ 800119c:	488c      	ldr	r0, [pc, #560]	; (80013d0 <main+0x338>)
+ 800119e:	f7ff fc8d 	bl	8000abc <HD44780_PrintStr>
+
+
 
   HAL_UART_Receive_IT(&huart1, &c, 1);
  80011a2:	2201      	movs	r2, #1
@@ -2669,7 +2671,7 @@ int main(void)
  80013a0:	4293      	cmp	r3, r2
  80013a2:	f67f af07 	bls.w	80011b4 <main+0x11c>
  80013a6:	e02b      	b.n	8001400 <main+0x368>
- 80013a8:	fde9f247 	.word	0xfde9f247
+ 80013a8:	fd87804a 	.word	0xfd87804a
  80013ac:	000095a1 	.word	0x000095a1
  80013b0:	0800bff0 	.word	0x0800bff0
  80013b4:	0800b000 	.word	0x0800b000

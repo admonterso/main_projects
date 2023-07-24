@@ -141,3 +141,4 @@ void printWaitDevaice();
 void cardOperation(uint8_t* finalData, uint8_t* p);
 void led(uint8_t n);
 uint8_t cardOperationWithBlockedSector(uint8_t* finalData);
+char* convertNumberToCharArray(uint64_t number);

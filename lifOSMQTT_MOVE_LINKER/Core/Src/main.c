@@ -29,7 +29,7 @@
 #include "switchSounds.h"
 #include "quectelCommands.h"
 #include "GEOtextLib.h"
-
+#include "variables.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -39,7 +39,6 @@
 #define currentTerminalADRR 0x0800B000
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
-#define currentTerminal 164522982240839
 
 unsigned long T,timer, counter;
 int check = 1;
@@ -59,6 +58,10 @@ uint8_t buffer[128];
 uint8_t buffer1[128];
 uint8_t MQTT_CHECK_DATA[100];
 int count = 0;
+
+uint32_t version;
+uint64_t terminalID;
+char * terminalStr;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -115,32 +118,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
 }
 
-char* convertNumberToCharArray(uint64_t number) {
-    // Count the number of digits in the number
-    uint64_t temp = number;
-    int numDigits = 1;
-    while (temp /= 10) {
-        numDigits++;
-    }
 
-    // Allocate memory for the character array (+1 for null-terminator)
-    char* buffer = (char*)malloc((numDigits + 1) * sizeof(char));
-    if (buffer == NULL) {
-        // Error in memory allocation
-        return NULL;
-    }
-
-    // Convert each digit to its corresponding character representation
-    int i = numDigits - 1;
-    while (number != 0) {
-        buffer[i--] = '0' + (number % 10);
-        number /= 10;
-    }
-
-    buffer[numDigits] = '\0'; // Null-terminate the character array
-
-    return buffer;
-}
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
@@ -256,9 +234,9 @@ int main(void)
 	int CardTime;
 
 
-  	uint32_t version = *(__IO uint32_t *)versionAdress; // for version check
-  	uint64_t terminalID = *(uint64_t *)currentTerminalADRR;
-  	char * terminalStr = convertNumberToCharArray(terminalID);
+    version = *(__IO uint32_t *)versionAdress; // for version check
+  	terminalID = *(uint64_t *)currentTerminalADRR;
+  	terminalStr = convertNumberToCharArray(terminalID);
 
     sprintf((char*) MQTT_CHECK_DATA, "{\"operationType\":\"check\",\"content\":{\"terminalID\":\"%s\",\"firmwareVersion\":%ld}}",terminalStr, version);
 

@@ -28,16 +28,12 @@
 #include "GEOtextLib.h"
 #include <string.h>
 #include <stdlib.h>
+#include <terminalConfig.h>
 
-#define address 0x0800C000
-//#define address 0x080056A0
-#define versionAdress 0x0800BFF0
-//#define versionAdress 0x080056A0
-#define bytesToRead 960
+
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
-#define currentTerminalADRR 0x0800B000
-#define currentTerminal 164522982240839
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
