@@ -625,3 +625,61 @@ void led(uint8_t n) {
 		HAL_Delay(100);
 	}
 }
+void read_card_data(){
+
+	uint8_t status;
+	uint8_t sectorKeyB[] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+
+	uint8_t str[MFRC522_MAX_LEN];
+	uint8_t str1[128];
+	uint8_t l;
+	uint8_t cardIDStatus = 0;
+	uint8_t cardReadStatus = 0;
+	uint8_t IDBuff[128];
+	uint8_t ReadDataBuff[64];
+	 MFRC522_Init();
+    status = MFRC522_Request(PICC_REQIDL, str);
+    if (status == MI_OK) {
+      status = MFRC522_Anticoll(str);
+      if (status == MI_OK) {
+        status = MFRC522_SelectTag(str);
+        if (status != 0) {
+          status = MFRC522_Auth(PICC_AUTHENT1B, 2, sectorKeyB, str); //authenticate card
+          if (status == MI_OK) {
+            status = MFRC522_Read(2, str1); //read the 2 sector
+            if (status == MI_OK) {
+
+              sprintf((char*) ReadDataBuff, "\"cardData\":\"%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\"}}", str1[0], str1[1], str1[2], str1[3], str1[4], str1[5], str1[6], str1[7], str1[8], str1[9], str1[10], str1[11],str1[12], str1[13], str1[14], str1[15]);
+
+
+
+              l = l + strlen((char*)ReadDataBuff);
+
+              cardReadStatus = 1;
+            }
+
+            if (status == MI_ERR) {
+              led(READ_ERR);
+              cardIDStatus = 0;
+
+            }
+          }
+          if (status != MI_OK) {
+            led(AUTH_ERR);
+            cardIDStatus = 0;
+          }
+        }
+        if (status != MI_OK) {
+          led(TAG_SELECT_ERR);
+          cardIDStatus = 0;
+        }
+
+      }
+      if (status != MI_OK) {
+        led(ANTICOL_ERR);
+        cardIDStatus = 0;
+
+      }
+
+    }
+}

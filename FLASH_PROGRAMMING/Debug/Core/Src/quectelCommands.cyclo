@@ -2,10 +2,10 @@ quectelCommands.c:19:5:doPost	1
 quectelCommands.c:79:10:readIncomeData	3
 quectelCommands.c:96:9:checkCommand	5
 quectelCommands.c:115:6:checkQueqtelWithNoEcho	4
-quectelCommands.c:134:6:ckeckQuectelSignalWithNoEcho	4
-quectelCommands.c:151:6:MQTTRecMod	5
-quectelCommands.c:171:6:MQTTOpenPort	5
-quectelCommands.c:197:6:MQTTConnect	5
-quectelCommands.c:222:6:MQTTSubToTopic	1
-quectelCommands.c:241:6:MQTTPubToTopic	1
-quectelCommands.c:256:9:checkMQTTCon	3
+quectelCommands.c:134:6:ckeckQuectelSignalWithNoEcho	5
+quectelCommands.c:161:6:MQTTRecMod	7
+quectelCommands.c:190:6:MQTTOpenPort	7
+quectelCommands.c:220:6:MQTTConnect	5
+quectelCommands.c:245:6:MQTTSubToTopic	1
+quectelCommands.c:265:6:MQTTPubToTopic	1
+quectelCommands.c:280:9:checkMQTTCon	3

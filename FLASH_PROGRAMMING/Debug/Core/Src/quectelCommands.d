@@ -24,7 +24,7 @@ Core/Src/quectelCommands.o: ../Core/Src/quectelCommands.c \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
- ../Core/Inc/terminalConfig.h
+ ../Core/Inc/terminalConfig.h ../Core/Inc/FLASH_PAGE_F1.h
 ../Core/Inc/quectelCommands.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
@@ -51,3 +51,4 @@ Core/Src/quectelCommands.o: ../Core/Src/quectelCommands.c \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
 ../Core/Inc/terminalConfig.h:
+../Core/Inc/FLASH_PAGE_F1.h:

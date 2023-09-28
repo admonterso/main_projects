@@ -30,7 +30,6 @@
 #include <stdlib.h>
 #include <terminalConfig.h>
 
-
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
 
@@ -68,7 +67,6 @@ static void MX_I2C1_Init(void);
 /* USER CODE BEGIN PFP */
 uint8_t flag = 0; // flag for operating fleshing used in UART callback
 uint8_t data[bytesToRead]; // main data that need to be flehed
-uint32_t testData[] = {0xB9337823, 0x237833B9}; // test data
 uint32_t Adress = address; // for address increment
 uint32_t state; // for buttons
 uint8_t updateChars[8]; // update char store
@@ -315,35 +313,46 @@ int main(void)
   HD44780_Init(2);
   printItvirteba(0, 3);
 
-//  eraseFlashRange(currentTerminalADRR, currentTerminalADRR + 4);
+//  	eraseFlashRange(GSM_signal_error_counter_address, GSM_signal_error_counter_address);
+//  	HAL_FLASH_Unlock();
+//	HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, GPRS_signal_error_counter_address, 10);
+//	HAL_FLASH_Lock();
 //
-//  HAL_FLASH_Unlock();
+//	eraseFlashRange(GSM_signal_error_counter_address, GSM_signal_error_counter_address);
+//	HAL_FLASH_Unlock();
+//	HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, GSM_signal_error_counter_address, 4);
+//	HAL_FLASH_Lock();
 //
-//  HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, currentTerminalADRR, 1);
-//
-//  HAL_FLASH_Lock();
-//
-//  uint64_t terminal =  *(__IO uint64_t *)currentTerminalADRR;
+//	eraseFlashRange(versionAdress, versionAdress);
+//	HAL_FLASH_Unlock();
+//	HAL_FLASH_Program(versionAdress, versionAdress, 0);
+//	HAL_FLASH_Lock();
 
   HD44780_SetCursor(0, 1);
-  for(int i = 0;i<2; i++){
-	  quectelInit();
-  }
-
+//  for(int i = 0;i<2; i++){
+//	  quectelInit();
+//  }
+  quectelInit();
   uint32_t * versionPTR = (uint32_t *)  versionAdress;
   uint32_t version = *versionPTR; // for version check
-
+  uint32_t *GSM_signal_error_counter_ptr = (uint32_t *)GSM_signal_error_counter_address;
+  uint32_t GSM_signal_error_counter_flash = *GSM_signal_error_counter_ptr;
   uint64_t terminalID = *flashCurTerminal(currentTerminal, currentTerminalADRR);
 
   if(version == 0xFFFFFFFF || version == 0){
-	  	eraseFlashRange(versionAdress, versionAdress + 4);
+	  	eraseFlashRange(versionAdress, versionAdress);
 		HAL_FLASH_Unlock();
 		HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD,versionAdress, 1);
 		HAL_FLASH_Lock();
   }
-
+  if(GSM_signal_error_counter_flash == 0xFFFFFFFF || GSM_signal_error_counter_flash == 0){
+	  	eraseFlashRange(GSM_signal_error_counter_address, GSM_signal_error_counter_address);
+		HAL_FLASH_Unlock();
+		HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD,GSM_signal_error_counter_address, 0);
+		HAL_FLASH_Lock();
+  }
   version = *versionPTR;
-
+  GSM_signal_error_counter_flash = *GSM_signal_error_counter_ptr;
 
 
   char * terminalStr = convertNumberToCharArray(terminalID);
@@ -381,7 +390,7 @@ int main(void)
 		  if(data[0] == 'E' && data[1] == 'N' && data[2] == 'D'){ // if the data == END
 			  memcpy(updateChars, data + 4, 8);
 			  int x = atoi((char*)updateChars);
-			  eraseFlashRange(versionAdress, versionAdress + 4);
+			  eraseFlashRange(versionAdress, versionAdress);
 			  HAL_FLASH_Unlock();
 			  HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD,versionAdress, x);
 			  HAL_FLASH_Lock();
@@ -389,7 +398,11 @@ int main(void)
 			  jumpToAddress(address);
 		  }
 		  if(data[0] == '2' && data[1] == '0' && data[2] == '0' && data[3] == 'R'){ // if the data == END
-		  			  jumpToAddress(address);
+				eraseFlashRange(GSM_signal_error_counter_address, GSM_signal_error_counter_address);
+				HAL_FLASH_Unlock();
+				HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, GSM_signal_error_counter_address, 0);
+				HAL_FLASH_Lock();
+				jumpToAddress(address);
 		  }
 
 		  if(data[0] == 'E' && data[1] == 'R' && data[2] == 'A' && data[3] == 'S' && data[4] == 'E'){ // if the data == END
@@ -434,7 +447,26 @@ int main(void)
 		  led(10);
 	  }
 
-	  if(checkCon == 0 && HAL_GetTick() - T >= 10000)HAL_NVIC_SystemReset();
+	  if(checkCon == 0 && HAL_GetTick() - T >= 10000){
+		  if(GSM_signal_error_counter_flash>=5){
+			uint8_t reset_commnad[] = "AT+QPOWD=0\r\n";
+			eraseFlashRange(GSM_signal_error_counter_address, GSM_signal_error_counter_address);
+			HAL_FLASH_Unlock();
+			HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, GSM_signal_error_counter_address, 0);
+			HAL_FLASH_Lock();
+			HAL_UART_Transmit(&huart1, reset_commnad, 12, 200);
+			HAL_NVIC_SystemReset();
+		  }
+		  else{
+			GSM_signal_error_counter_flash++;
+			eraseFlashRange(GSM_signal_error_counter_address, GSM_signal_error_counter_address);
+			HAL_FLASH_Unlock();
+			HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, GSM_signal_error_counter_address, GSM_signal_error_counter_flash);
+			HAL_FLASH_Lock();
+			HAL_NVIC_SystemReset();
+		  }
+
+	  }
 	  if(HAL_GetTick() - T >= 2*(60000))HAL_NVIC_SystemReset();
     /* USER CODE END WHILE */
 

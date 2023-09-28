@@ -7,7 +7,7 @@
 
 
 #include "quectelCommands.h"
-
+#include "FLASH_PAGE_F1.h"
 
 
 
@@ -134,60 +134,83 @@ void checkQueqtelWithNoEcho (uint8_t *RXBuffer){
 void ckeckQuectelSignalWithNoEcho(uint8_t *RXBuffer){
 	uint8_t status = 0;
 	int timeOut = HAL_GetTick();
-	sprintf((char*)mainBuffer, ATCOPS);
-	while (status == 0) {
-		HAL_UART_Transmit(&huart1, mainBuffer, 10, 200);
-		HAL_UART_Receive(&huart1, RXBuffer, 45, 100);
-		status = checkCommand(RXBuffer, (uint8_t*)"MAGT");
+	uint8_t GSM_signal_error_counter = 0; // for version check
 
-		if(status){
-			break;
+	sprintf((char*)mainBuffer, ATCOPS);
+	while(status == 0){
+			HAL_UART_Transmit(&huart1, mainBuffer, 10, 200);
+			HAL_UART_Receive(&huart1, RXBuffer, 1000, 1000);
+			status = checkCommand(RXBuffer, (uint8_t*)"MAGT");
+			if(!status){
+				GSM_signal_error_counter++;
+			}
+			if(GSM_signal_error_counter >= 30){
+				sprintf((char*)mainBuffer, ATQPOWD);
+				HAL_UART_Transmit(&huart1, mainBuffer, 12, 200);
+				HAL_NVIC_SystemReset();
+			}
+
+			if(HAL_GetTick() - timeOut >= 60000){
+				HAL_NVIC_SystemReset();
+			}
 		}
-		if(HAL_GetTick() - timeOut >= 10000){
-			HAL_NVIC_SystemReset();
-		}
-	}
+
+
+
 }
 void MQTTRecMod(uint8_t *RXBuffer){
-	uint8_t status = 0;
+	uint8_t status_err = 0;
+	uint8_t status_ok = 0;
+	uint8_t GPRS_signal_error_counter = 0;
 	int timeOut = HAL_GetTick();
 	sprintf((char*)mainBuffer, ATQMTCFG);
-	while(status == 0){
+	while(status_err == 0 || status_ok == 0){
 		HAL_UART_Transmit(&huart1, mainBuffer, 29, 100);
 		HAL_UART_Receive(&huart1, RXBuffer, 10, 100);
-		status = checkCommand(RXBuffer, (uint8_t*)"OK");
-		if(status == 0){
-			status = checkCommand(RXBuffer, (uint8_t*)"ERROR");
+		status_ok = checkCommand(RXBuffer, (uint8_t*)"OK");
+		status_err =  checkCommand(RXBuffer, (uint8_t*)"ERROR");
+		if(GPRS_signal_error_counter >= 10){
+			sprintf((char*)mainBuffer, ATQPOWD);
+			HAL_UART_Transmit(&huart1, mainBuffer, 12, 200);
+			HAL_NVIC_SystemReset();
 		}
-		if(status){
+		if(status_err || status_ok){
 			break;
 		}
-		if(HAL_GetTick() - timeOut >= 10000){
+		else{
+			GPRS_signal_error_counter++;
+		}
+
+		if(HAL_GetTick() - timeOut >= 30000){
 			HAL_NVIC_SystemReset();
 		}
 	}
 }
 
 void MQTTOpenPort(uint8_t *RXBuffer){
-	uint8_t status = 0;
+	uint8_t status_err_1 = 0;
+	uint8_t status_err_2 = 0;
+	uint8_t GPRS_signal_error_counter = 0;
 	int timeOut = HAL_GetTick();
 	sprintf((char*)mainBuffer, ATQMTOPEN);
-	while(status == 0){
+	while(status_err_1 == 0 || status_err_2 == 0){
 
 		HAL_UART_Transmit(&huart1, mainBuffer, 34, 100);
 		HAL_UART_Receive(&huart1, RXBuffer, 21, 4000);
-
-		status = checkCommand(RXBuffer, (uint8_t*)"+QMTOPEN: 0,0");
-		if(status == 0){
-			status = checkCommand(RXBuffer, (uint8_t*)"+QMTOPEN: 0,2");
+		status_err_1 =  checkCommand(RXBuffer, (uint8_t*)"+QMTOPEN: 0,0");
+		status_err_2 =  checkCommand(RXBuffer, (uint8_t*)"+QMTOPEN: 0,2");
+		if(GPRS_signal_error_counter >= 3){
+			sprintf((char*)mainBuffer, ATQPOWD);
+			HAL_UART_Transmit(&huart1, mainBuffer, 12, 200);
+			HAL_NVIC_SystemReset();
 		}
-
-
-		if(status){
+		if(status_err_2 || status_err_1){
 			break;
 		}
-
-		if(HAL_GetTick() - timeOut >= 10000){
+		else{
+			GPRS_signal_error_counter++;
+		}
+		if(HAL_GetTick() - timeOut >= 30000){
 			HAL_NVIC_SystemReset();
 		}
 
@@ -223,6 +246,7 @@ void MQTTSubToTopic(uint8_t *RXBuffer){
 //	uint8_t status = 0;
 //	while(status == 0){
 	sprintf((char*)mainBuffer, ATQMTSUB);
+
 		HAL_UART_Transmit(&huart1, mainBuffer, 35, 100);
 //		HAL_UART_Receive(&huart1, RXBuffer, 25, 2000);
 		HAL_Delay(500);
