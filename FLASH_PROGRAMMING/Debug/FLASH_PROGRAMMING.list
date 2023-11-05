@@ -2265,6 +2265,7 @@ int main(void)
   HD44780_Init(2);
  80010c4:	2002      	movs	r0, #2
  80010c6:	f7ff fbe1 	bl	800088c <HD44780_Init>
+
   printItvirteba(0, 3);
  80010ca:	2103      	movs	r1, #3
  80010cc:	2000      	movs	r0, #0
@@ -2441,6 +2442,7 @@ int main(void)
  80011f8:	4969      	ldr	r1, [pc, #420]	; (80013a0 <main+0x308>)
  80011fa:	4865      	ldr	r0, [pc, #404]	; (8001390 <main+0x2f8>)
  80011fc:	f002 fe4d 	bl	8003e9a <HAL_UART_Receive>
+
 		  if(data[0] == 'E' && data[1] == 'N' && data[2] == 'D'){ // if the data == END
  8001200:	4b67      	ldr	r3, [pc, #412]	; (80013a0 <main+0x308>)
  8001202:	781b      	ldrb	r3, [r3, #0]
@@ -2628,7 +2630,7 @@ int main(void)
  8001360:	f002 fe62 	bl	8004028 <HAL_UART_Receive_IT>
  8001364:	e026      	b.n	80013b4 <main+0x31c>
  8001366:	bf00      	nop
- 8001368:	fd87804a 	.word	0xfd87804a
+ 8001368:	fde9f247 	.word	0xfde9f247
  800136c:	000095a1 	.word	0x000095a1
  8001370:	e000ed00 	.word	0xe000ed00
  8001374:	0800bff0 	.word	0x0800bff0

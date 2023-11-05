@@ -311,6 +311,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   HD44780_Init(2);
+
   printItvirteba(0, 3);
 
 //  	eraseFlashRange(GSM_signal_error_counter_address, GSM_signal_error_counter_address);
@@ -387,6 +388,7 @@ int main(void)
 		  uint8_t flesh = 0;
 		  checkCon = 1;
 		  HAL_UART_Receive(&huart1, data, bytesToRead, 200);
+
 		  if(data[0] == 'E' && data[1] == 'N' && data[2] == 'D'){ // if the data == END
 			  memcpy(updateChars, data + 4, 8);
 			  int x = atoi((char*)updateChars);
