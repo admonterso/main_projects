@@ -8,4 +8,3 @@
 ../Core/Src/quectelCommands.c:220:6:MQTTConnect	24	static
 ../Core/Src/quectelCommands.c:245:6:MQTTSubToTopic	16	static
 ../Core/Src/quectelCommands.c:265:6:MQTTPubToTopic	80	static
-../Core/Src/quectelCommands.c:280:9:checkMQTTCon	24	static

@@ -8,4 +8,3 @@ quectelCommands.c:190:6:MQTTOpenPort	7
 quectelCommands.c:220:6:MQTTConnect	5
 quectelCommands.c:245:6:MQTTSubToTopic	1
 quectelCommands.c:265:6:MQTTPubToTopic	1
-quectelCommands.c:280:9:checkMQTTCon	3

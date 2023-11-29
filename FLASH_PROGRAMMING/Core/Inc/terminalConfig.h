@@ -18,9 +18,11 @@
 
 #define currentTerminalADRR 0x0800B000
 
-#define currentTerminal 164522982240839
+#define currentTerminal 170014891411111
 #define backServer liftos08765546789
-#define currentTerminalSub t164522982240839
+#define currentTerminalSub t170014891411111
 //t164522975789130
 //t164522982240839
+//t169930523100000
+//t170014891411111
 #endif /* INC_TERMINALCONFIG_H_ */

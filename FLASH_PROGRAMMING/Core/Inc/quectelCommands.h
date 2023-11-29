@@ -23,7 +23,7 @@
 #define ATQMTOPEN      (at "+QMTOPEN=0,\"167.71.57.18\",1883\r\n")
 #define ATQMTSUB	   (at "+QMTSUB=0,1,\"" STR(currentTerminalSub) "\",2\r\n")
 #define ATQMTCFG       (at "+QMTCFG=\"recv/mode\",0,0,1\r\n")
-#define ATQMTCONN      (at "+QMTCONN=0,\"client1\",\"terminal\",\"41Q@BG2dIzIM\"\r\n")
+#define ATQMTCONN      (at "+QMTCONN=0,\"MEMERR\",\"terminal\",\"41Q@BG2dIzIM\"\r\n")
 #define ATQMTOPEN1     (at "+QMTOPEN?\r\n")
 #define ATQHTTPCFG0    (at "+QHTTPCFG=\"contextid\",1\r\n")
 #define ATQHTTPCFG1    (at "+QHTTPCFG=\"sslctxid\",1\r\n")
@@ -49,6 +49,5 @@ void MQTTOpenPort(uint8_t *RXBuffer);
 void MQTTConnect(uint8_t *RXBuffer);
 void MQTTSubToTopic(uint8_t *RXBuffer);
 void MQTTPubToTopic(int pubData);
-uint8_t checkMQTTCon(uint8_t *RXBuffer);
 uint8_t checkCommand(uint8_t* text, uint8_t* word);
 #endif /* SRC_QUECTELCOMMANDS_H_ */

@@ -277,29 +277,7 @@ void MQTTPubToTopic(int length){
 
 }
 
-uint8_t checkMQTTCon(uint8_t *RXBuffer){
-	uint8_t status = 0;
-	sprintf((char*)mainBuffer, ATQMTOPEN1);
 
-	while(status == 0){
-
-		HAL_UART_Transmit(&huart1, mainBuffer, 13, 100);
-
-		HAL_UART_Receive(&huart1, RXBuffer, 40, 500);
-
-		status = checkCommand(RXBuffer, (uint8_t*)"165.22.25.19");
-
-		if(status){
-			break;
-		}
-		else{
-			return 1;
-		}
-
-	}
-
-	return 0;
-}
 
 
 
