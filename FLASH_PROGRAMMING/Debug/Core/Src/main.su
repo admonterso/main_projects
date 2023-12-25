@@ -7,9 +7,9 @@
 ../Core/Src/main.c:220:6:led	24	static
 ../Core/Src/main.c:229:6:quectelInit	8	static
 ../Core/Src/main.c:263:12:flashCurTerminal	40	static
-../Core/Src/main.c:283:5:main	96	static,ignoring_inline_asm
-../Core/Src/main.c:484:6:SystemClock_Config	72	static
-../Core/Src/main.c:524:13:MX_I2C1_Init	8	static
-../Core/Src/main.c:558:13:MX_USART1_UART_Init	8	static
-../Core/Src/main.c:591:13:MX_GPIO_Init	40	static
-../Core/Src/main.c:627:6:Error_Handler	4	static,ignoring_inline_asm
+../Core/Src/main.c:283:5:main	112	static,ignoring_inline_asm
+../Core/Src/main.c:489:6:SystemClock_Config	72	static
+../Core/Src/main.c:529:13:MX_I2C1_Init	8	static
+../Core/Src/main.c:563:13:MX_USART1_UART_Init	8	static
+../Core/Src/main.c:596:13:MX_GPIO_Init	40	static
+../Core/Src/main.c:632:6:Error_Handler	4	static,ignoring_inline_asm

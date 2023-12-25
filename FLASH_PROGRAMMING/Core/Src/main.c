@@ -340,7 +340,12 @@ int main(void)
   uint32_t GSM_signal_error_counter_flash = *GSM_signal_error_counter_ptr;
   uint64_t terminalID = *flashCurTerminal(currentTerminal, currentTerminalADRR);
 
-  if(version == 0xFFFFFFFF || version == 0){
+  uint32_t * new_programe_validity_ptr1 =  (uint32_t *)  address;
+  uint32_t new_programe_validity1 = *new_programe_validity_ptr1;
+
+  uint32_t * new_programe_validity_ptr2 =  (uint32_t *)  new_programe_validity_ptr1+1;
+  uint32_t new_programe_validity2 = *new_programe_validity_ptr2;
+  if(version == 0xFFFFFFFF || version == 0 || (new_programe_validity1 == 0 && new_programe_validity2 == 0)){
 	  	eraseFlashRange(versionAdress, versionAdress);
 		HAL_FLASH_Unlock();
 		HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD,versionAdress, 1);

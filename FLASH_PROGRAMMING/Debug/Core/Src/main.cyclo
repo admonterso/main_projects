@@ -7,9 +7,9 @@ main.c:207:6:jumpToAddress	1
 main.c:220:6:led	2
 main.c:229:6:quectelInit	1
 main.c:263:12:flashCurTerminal	1
-main.c:283:5:main	26
-main.c:484:6:SystemClock_Config	3
-main.c:524:13:MX_I2C1_Init	2
-main.c:558:13:MX_USART1_UART_Init	2
-main.c:591:13:MX_GPIO_Init	1
-main.c:627:6:Error_Handler	1
+main.c:283:5:main	28
+main.c:489:6:SystemClock_Config	3
+main.c:529:13:MX_I2C1_Init	2
+main.c:563:13:MX_USART1_UART_Init	2
+main.c:596:13:MX_GPIO_Init	1
+main.c:632:6:Error_Handler	1

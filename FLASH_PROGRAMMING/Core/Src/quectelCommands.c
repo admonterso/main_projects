@@ -144,13 +144,13 @@ void ckeckQuectelSignalWithNoEcho(uint8_t *RXBuffer){
 			if(!status){
 				GSM_signal_error_counter++;
 			}
-			if(GSM_signal_error_counter >= 30){
+			if(GSM_signal_error_counter >= 3){
 				sprintf((char*)mainBuffer, ATQPOWD);
 				HAL_UART_Transmit(&huart1, mainBuffer, 12, 200);
 				HAL_NVIC_SystemReset();
 			}
 
-			if(HAL_GetTick() - timeOut >= 60000){
+			if(HAL_GetTick() - timeOut >= 15000){
 				HAL_NVIC_SystemReset();
 			}
 		}
